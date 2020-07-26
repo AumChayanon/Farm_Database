@@ -263,7 +263,7 @@
         <div v-for="(index, counter) in search_peo" :key="index.id">
           <h4>คนที่: {{ counter + 1 }}</h4>
           <div class="form-group">
-            <img class="preview" :src="index.img" />
+            <img class="preview" :src="showimg[counter].img" />
           </div>
           <div class="row">
             <div class="col">
@@ -879,6 +879,12 @@ export default {
       infoWindow: null,
       draw_areas: [],
       colors: [], // map
+      img: [],
+      showimg: [
+        {
+          img: "",
+        },
+      ],
       searchQuery: null,
       data_people: [],
       search_peo: [],
@@ -1032,17 +1038,19 @@ export default {
       this.search_land = housetest.land;
       this.search_explorers = housetest.explorers;
       for(var i = 0; i < housetest.families.length; i++){
+        if(housetest.families[i].img.length < 30){
+          var imgShow = "";
+                  await axios
+                  .get(`http://localhost:5000/api/img/` + housetest.families[i].img)
+                  .then((response) => {
+                    imgShow = response.data.img
+                    this.showimg[i].img = imgShow
+                  })
+                  .catch((e) => {
+                    this.errors.push(e);
+                  });
+        }
         
-        var imgShow = "";
-        await axios
-        .get(`http://localhost:5000/api/img/` + housetest.families[i].img)
-        .then((response) => {
-          imgShow = response.data.img
-          this.search_peo[i].img = imgShow
-        })
-        .catch((e) => {
-          this.errors.push(e);
-        });
       }
 
       this.status = "show";

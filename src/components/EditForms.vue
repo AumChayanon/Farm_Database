@@ -56,11 +56,22 @@
             <br />
             <h4>คนที่: {{ counter + 1 }}.</h4>
             <div class="form-group">
-              <img class="preview" :src="data.families[counter].img" />
+              <img class="preview" :src="showimg[counter].img" />
             </div>
             <div class="form-group">
-              <p>อัพโหลดรูป:</p>
-              <input type="file" @change="previewImage" accept="image/*" style="font-family: auto;" />
+              <div class="row">
+                    <div class="col" style="max-width: auto;">
+                      <b-form-file @change="handleImage" accept="image/*" />
+                    </div>
+                    <div class="col" style="max-width: 35%;">
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        style="color:#ffffff"
+                        @click="uploadImg(counter)"
+                      >อัปโหลด</button>
+                    </div>
+                  </div>
             </div>
 
             <b-form-group label="เพศ:">
@@ -1423,6 +1434,7 @@ import * as firebase from "firebase";
 import formEJson from "../assets/formsEdit.json"
 import options from "../assets/options.json"
 import axios from "axios";
+import Swal from "sweetalert2";
 var labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var labelIndex = 0;
 var number = 0;
@@ -1450,6 +1462,12 @@ export default {
       //map
       status: "default",
       statusMap: "default", // map
+      img: [],
+      showimg: [
+        {
+          img: "",
+        },
+      ],
       data: formEJson,
       data_read: [],
       imageData: null,
@@ -1488,13 +1506,15 @@ export default {
     this.data_read = this.data_edit.find(mgs => mgs._id == this.edit);
     this.data = this.data_read 
     for(var i = 0; i < this.data_read.families.length; i++){
-        if(this.data_read.families[i].img.length < 30){
+      
+        if(this.showimg[i].img.length < 30){
           var imgShow = "";
           await axios
           .get(`http://localhost:5000/api/img/` + this.data_read.families[i].img)
           .then((response) => {
             imgShow = response.data.img
-            this.data.families[i].img = imgShow
+            this.showimg[i].img = imgShow
+            ;
           })
           .catch((e) => {
             this.errors.push(e);
@@ -1595,9 +1615,8 @@ export default {
         land: this.data.land,
         families: this.data.families,
       };
-      alert(this.edit)
       axios
-      .put('http://localhost:5000/api/data/' + this.edit , str )
+      .put(`http://localhost:5000/api/data/${this.edit}` , str )
       .then((response) => {
         console.log(response);
       })
@@ -1609,33 +1628,79 @@ export default {
     reloadApp() {
       window.location.reload();
     },
-    previewImage(event) {
-      this.uploadValue = 0;
-      this.picture = null;
-      this.imageData = event.target.files[0];
+    handleImage(e) {
+      this.img = [];
+      this.img = e.target.files[0];
+      console.log(this.img);
+    },
+    uploadImg(counter) {
+      // Upload images to DB
+      if (!this.img.type.includes("image/")) {
+        alert("Please select an image file");
+        return;
+      }
 
-      this.picture = null;
-      const storageRef = firebase
-        .storage()
-        .ref(`${this.imageData.name}`)
-        .put(this.imageData);
-      storageRef.on(
-        `state_changed`,
-        snapshot => {
-          this.uploadValue =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
-        error => {
-          console.log(error.message);
-        },
-        () => {
-          this.uploadValue = 100;
-          storageRef.snapshot.ref.getDownloadURL().then(url => {
-            var num = this.data.families.length - 1;
-            this.data.families[num].img = url;
+      if (typeof FileReader === "function") {
+        const reader = new FileReader();
+        var loal_status = "";
+        reader.onload = (event) => {
+          this.showimg[counter].img = event.target.result;
+          //console.log(this.data.families[counter].img)
+          let str = {
+            img: event.target.result,
+          };
+          axios
+            .put(`http://localhost:5000/api/img/${this.data.families[counter].img}`, str)
+            .then((response) => {
+              this.data.families[counter].img = response.data;
+              loal_status = response.data;
+              //console.log("response", response.data );
+              if (response.data) {
+                Swal.fire({
+                  position: "top-end",
+                  icon: "success",
+                  title: "อัปโหลดรูปเสร็จสิ้น",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              }
+            })
+            .catch((e) => {
+              this.errors.push(e);
+            });
+        };
+        reader.readAsDataURL(this.img);
+        if (loal_status === "") {
+          let timerInterval;
+          Swal.fire({
+            title: "กำลังอัปโหลดรูป!",
+            timer: 3000,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+              timerInterval = setInterval(() => {
+                const content = Swal.getContent();
+                if (content) {
+                  const b = content.querySelector("b");
+                  if (b) {
+                    b.textContent = Swal.getTimerLeft();
+                  }
+                }
+              }, 100);
+            },
+            onClose: () => {
+              clearInterval(timerInterval);
+            },
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log("I was closed by the timer");
+            }
           });
         }
-      );
+      } else {
+        alert("Sorry, FileReader API not supported");
+      }
     },
     addVisa() {
       this.data.families.push({
@@ -1857,9 +1922,11 @@ export default {
           }
         }
       });
+      this.showimg.push({ img: "" });
     },
     deleteVisa(counter) {
       this.data.families.splice(counter, 1);
+      this.showimg.splice(counter, 1);
     },
     addland() {
       this.data.land.push({
