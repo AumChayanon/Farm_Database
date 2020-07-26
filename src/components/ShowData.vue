@@ -1039,6 +1039,7 @@ export default {
       this.search_explorers = housetest.explorers;
       for(var i = 0; i < housetest.families.length; i++){
         if(housetest.families[i].img.length < 30){
+          this.addVisa()
           var imgShow = "";
                   await axios
                   .get(`http://localhost:5000/api/img/` + housetest.families[i].img)
@@ -1054,6 +1055,9 @@ export default {
       }
 
       this.status = "show";
+    },
+    addVisa() {
+      this.showimg.push({ img: "" });
     },
     // map
     getDataMap() {

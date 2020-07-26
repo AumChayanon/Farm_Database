@@ -1504,9 +1504,11 @@ export default {
   },
   async created() {
     this.data_read = this.data_edit.find(mgs => mgs._id == this.edit);
+    for(var k = 0; k < this.data_read.length - 1; k++){
+      await this.addVisa()
+    }
     this.data = this.data_read 
     for(var i = 0; i < this.data_read.families.length; i++){
-      
         if(this.showimg[i].img.length < 30){
           var imgShow = "";
           await axios

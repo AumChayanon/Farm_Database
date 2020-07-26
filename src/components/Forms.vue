@@ -2022,224 +2022,224 @@ export default {
     },
     addVisa() {
       this.data.families.push({
-        img: "",
-        sex: "",
-        name_prefix: {
-          prefix: "",
-          other: "",
-        },
-        name: "",
-        lastname: "",
-        age: "",
-        status: "",
-        phone: "",
-        live: "",
-        job: {
-          sta_veget: [],
-          re_veget: "",
-          ex_veget: "",
-          sta_rice: [],
-          re_rice: "",
-          ex_rice: "",
-          sta_rub: [],
-          re_rub: "",
-          ex_rub: "",
-          sta_sell: [],
-          re_sell: "",
-          ex_sell: "",
-          sta_fish: [],
-          re_fish: "",
-          ex_fish: "",
-          sta_herb: [],
-          re_herb: "",
-          ex_herb: "",
-          sta_silk: [],
-          re_silk: "",
-          ex_silk: "",
-          sta_other: [],
-          re_other: "",
-          ex_other: "",
-          type_other: "",
-          sta_other2: [],
-          re_other2: "",
-          ex_other2: "",
-          type_other2: "",
-        },
-        disease: {
-          sta_dis: [],
-          othe_dis: "",
-        },
-        education: {
-          sta_ed: "",
-          ed: "",
-        },
-        relationship: "",
-        first_jop: {
-          sta_fj: [],
-          othe_fj: "",
-        },
-        expenditure: {
-          water: "",
-          electric: "",
-          food: "",
-          oil: "",
-          borrow: {
-            borrow1: {
-              bor: "",
-              cost: "",
-            },
-            borrow2: {
-              bor: "",
-              cost: "",
-            },
-            borrow3: {
-              bor: "",
-              cost: "",
-            },
-          },
-          phone: "",
-          other: {
-            other1: {
+            img: "",
+            sex: "",
+            name_prefix: {
+              prefix: "",
               other: "",
-              cost: "",
             },
-            other2: {
-              other: "",
-              cost: "",
+            name: "",
+            lastname: "",
+            age: "",
+            status: "",
+            phone: "",
+            live: "",
+            job: {
+              sta_veget: [],
+              re_veget: "",
+              ex_veget: "",
+              sta_rice: [],
+              re_rice: "",
+              ex_rice: "",
+              sta_rub: [],
+              re_rub: "",
+              ex_rub: "",
+              sta_sell: [],
+              re_sell: "",
+              ex_sell: "",
+              sta_fish: [],
+              re_fish: "",
+              ex_fish: "",
+              sta_herb: [],
+              re_herb: "",
+              ex_herb: "",
+              sta_silk: [],
+              re_silk: "",
+              ex_silk: "",
+              sta_other: [],
+              re_other: "",
+              ex_other: "",
+              type_other: "",
+              sta_other2: [],
+              re_other2: "",
+              ex_other2: "",
+              type_other2: "",
             },
-          },
-        },
-        revenue_job: "",
-        expenditure_job: "",
-        re_farm_job: {
-          field: {
-            sack: "",
-            kg: "",
-            status: [],
-          },
-          animal: {
-            status: [],
-            ani1: "",
-            cost_ami1: "",
-            ani2: "",
-            cost_ami2: "",
-          },
-          mat: {
-            status: [],
-            mat: "",
-          },
-          pre_mat: {
-            status: [],
-            mat: "",
-          },
-          pre_field: {
-            sack: "",
-            kg: "",
-            status: [],
-          },
-          pre_animal: {
-            status: [],
-            cost_ami1: "",
-            ani1: "",
-            cost_ami2: "",
-            ani2: "",
-          },
-          vegetables: {
-            status: [],
-            vegetables: "",
-          },
-          pre_vegetables: {
-            status: [],
-            vegetables: "",
-          },
-          other: {
-            status: [],
-            type1: "",
-            costother1: "",
-            type2: "",
-            costother2: "",
-          },
-          pre_other: {
-            status: [],
-            type1: "",
-            costother1: "",
-            type2: "",
-            costother2: "",
-          },
-        },
-        ex_farm_job: {
-          fertilizer: {
-            status: [],
-            fertilizer: "",
-          },
-          wage: {
-            status: [],
-            wage: "",
-          },
-          rice: {
-            status: [],
-            rice: "",
-          },
-          vegetables: {
-            status: [],
-            vege: "",
-          },
-          animal_feed: {
-            status: [],
-            animal_feed: "",
-          },
-          pre_fertilizer: {
-            status: [],
-            fertilizer: "",
-          },
-          pre_wage: {
-            status: [],
-            wage: "",
-          },
-          pre_rice: {
-            status: [],
-            rice: "",
-          },
-          pre_vegetables: {
-            status: [],
-            vege: "",
-          },
-          pre_animal_feed: {
-            status: [],
-            animal_feed: "",
-          },
-          pre_other: {
-            status: [],
-            other1: {
-              other: "",
-              cost: "",
+            disease: {
+              sta_dis: [],
+              othe_dis: "",
             },
-            other2: {
-              other: "",
-              cost: "",
+            education: {
+              sta_ed: "",
+              ed: "",
             },
-            other3: {
-              other: "",
-              cost: "",
+            relationship: "",
+            first_jop: {
+              sta_fj: "",
+              othe_fj: "",
             },
-          },
-          other: {
-            status: [],
-            other1: {
-              other: "",
-              cost: "",
+            expenditure: {
+              water: "",
+              electric: "",
+              food: "",
+              oil: "",
+              borrow: {
+                borrow1: {
+                  bor: "",
+                  cost: "",
+                },
+                borrow2: {
+                  bor: "",
+                  cost: "",
+                },
+                borrow3: {
+                  bor: "",
+                  cost: "",
+                },
+              },
+              phone: "",
+              other: {
+                other1: {
+                  other: "",
+                  cost: "",
+                },
+                other2: {
+                  other: "",
+                  cost: "",
+                },
+              },
             },
-            other2: {
-              other: "",
-              cost: "",
+            revenue_job: "",
+            expenditure_job: "",
+            re_farm_job: {
+              field: {
+                sack: "",
+                kg: "",
+                status: [],
+              },
+              animal: {
+                status: [],
+                ani1: "",
+                cost_ami1: "",
+                ani2: "",
+                cost_ami2: "",
+              },
+              mat: {
+                status: [],
+                mat: "",
+              },
+              pre_mat: {
+                status: [],
+                mat: "",
+              },
+              pre_field: {
+                sack: "",
+                kg: "",
+                status: [],
+              },
+              pre_animal: {
+                status: [],
+                cost_ami1: "",
+                ani1: "",
+                cost_ami2: "",
+                ani2: "",
+              },
+              vegetables: {
+                status: [],
+                vegetables: "",
+              },
+              pre_vegetables: {
+                status: [],
+                vegetables: "",
+              },
+              other: {
+                status: [],
+                type1: "",
+                costother1: "",
+                type2: "",
+                costother2: "",
+              },
+              pre_other: {
+                status: [],
+                type1: "",
+                costother1: "",
+                type2: "",
+                costother2: "",
+              },
             },
-            other3: {
-              other: "",
-              cost: "",
+            ex_farm_job: {
+              fertilizer: {
+                status: [],
+                fertilizer: "",
+              },
+              wage: {
+                status: [],
+                wage: "",
+              },
+              rice: {
+                status: [],
+                rice: "",
+              },
+              vegetables: {
+                status: [],
+                vege: "",
+              },
+              animal_feed: {
+                status: [],
+                animal_feed: "",
+              },
+              pre_fertilizer: {
+                status: [],
+                fertilizer: "",
+              },
+              pre_wage: {
+                status: [],
+                wage: "",
+              },
+              pre_rice: {
+                status: [],
+                rice: "",
+              },
+              pre_vegetables: {
+                status: [],
+                vege: "",
+              },
+              pre_animal_feed: {
+                status: [],
+                animal_feed: "",
+              },
+              pre_other: {
+                status: [],
+                other1: {
+                  other: "",
+                  cost: "",
+                },
+                other2: {
+                  other: "",
+                  cost: "",
+                },
+                other3: {
+                  other: "",
+                  cost: "",
+                },
+              },
+              other: {
+                status: [],
+                other1: {
+                  other: "",
+                  cost: "",
+                },
+                other2: {
+                  other: "",
+                  cost: "",
+                },
+                other3: {
+                  other: "",
+                  cost: "",
+                },
+              },
             },
-          },
-        },
-      });
+        });
       this.showimg.push({ img: "" });
     },
     deleteVisa(counter) {
@@ -2286,7 +2286,6 @@ export default {
         land: this.data.land,
         families: this.data.families,
       };
-      console.log("str", str);
       await axios
         .post(`http://localhost:5000/api/data`, str)
         .then((response) => {
