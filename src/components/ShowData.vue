@@ -847,7 +847,7 @@ import EditData from "./EditForms";
 import * as firebase from "firebase";
 import Pagination from "../components/Pagination";
 import Swal from "sweetalert2";
-
+import axios from "axios";
 // CommonJS
 //const Swal = require('sweetalert2')
 
@@ -964,17 +964,6 @@ export default {
       }
     }
   },
-  created() {
-    dataRef.on("child_removed", snapshot => {
-      const del = this.data.find(mgs => mgs.key == snapshot.key);
-      const index = this.data.indexOf(del);
-      this.data.splice(index, 1);
-
-      const delC = this.data_conclude.find(mgs => mgs.key == snapshot.key);
-      const indexC = this.data_conclude.indexOf(delC);
-      this.data_conclude.splice(indexC, 1);
-    });
-  },
   methods: {
     closeEditForms(e){
       this.status = e;
@@ -1006,7 +995,14 @@ export default {
       }).then(result => {
         if (result.value) {
           Swal.fire("ลบเสร็จสิ้น!", "คุณได้ลบข้อมูลสำเร็จเรียบร้อยแล้ว.", "success");
-          dataRef.child(value).remove();
+          axios
+          .delete('http://localhost:5000/api/data/' + value )
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((e) => {
+            this.errors.push(e);
+          });
         }
       });
     },
@@ -1030,11 +1026,24 @@ export default {
       this.search_in_peo = [];
       this.search_explorers = [];
 
-      const housetest = this.data.find(mgs => mgs.key == e);
+      const housetest = this.data.find(mgs => mgs._id == e);
       this.search_house = housetest.address;
       this.search_peo = housetest.families;
       this.search_land = housetest.land;
       this.search_explorers = housetest.explorers;
+      for(var i = 0; i < housetest.families.length; i++){
+        
+        var imgShow = "";
+        await axios
+        .get(`http://localhost:5000/api/img/` + housetest.families[i].img)
+        .then((response) => {
+          imgShow = response.data.img
+          this.search_peo[i].img = imgShow
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
+      }
 
       this.status = "show";
     },
@@ -1063,28 +1072,6 @@ export default {
       draw_areas.push(drawing);
       colors.push(color);
     },
-    /*showArrays(event) {
-      // Since this polygon has only one path, we can call getPath() to return the
-      // MVCArray of LatLngs.
-      var vertices = getPath();
-      var contentString =
-        "<b>Bermuda Triangle polygon</b><br>" +
-        "Clicked location: <br>" +
-        event.latLng.lat() +
-        "," +
-        event.latLng.lng() +
-        "<br>";
-      // Iterate over the vertices.
-      for (var i = 0; i < vertices.getLength(); i++) {
-        var xy = vertices.getAt(i);
-        contentString +=
-          "<br>" + "Coordinate " + i + ":<br>" + xy.lat() + "," + xy.lng();
-      }
-      // Replace the info window's content and position.
-      infoWindow.setContent(contentString);
-      infoWindow.setPosition(event.latLng);
-      infoWindow.open(map);
-    },*/
     addMarker(location) {
       var marker = new google.maps.Marker({
         position: location,

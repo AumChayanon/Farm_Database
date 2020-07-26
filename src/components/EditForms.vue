@@ -1422,6 +1422,7 @@
 import * as firebase from "firebase";
 import formEJson from "../assets/formsEdit.json"
 import options from "../assets/options.json"
+import axios from "axios";
 var labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var labelIndex = 0;
 var number = 0;
@@ -1484,22 +1485,23 @@ export default {
     };
   },
   async created() {
-    this.data_read = this.data_edit.find(mgs => mgs.key == this.edit);
-    //this.data["income"] = incometest
-    this.data.address = this.data_read.address;
-    this.data.explorers = this.data_read.explorers;
-    for (var l = 0; l < this.data_read.land.length - 1; l++) {
-      this.addland();
-    }
-    for (var j = 0; j < this.data_read.land.length; j++) {
-      this.data.land[j] = this.data_read.land[j];
-    }
-    
-    for (var k = 0; k < this.data_read.families.length - 1; k++) {
-      this.addVisa();
-    }
-    await this.createForms();
-    //console.log("data", this.data);
+    this.data_read = this.data_edit.find(mgs => mgs._id == this.edit);
+    this.data = this.data_read 
+    for(var i = 0; i < this.data_read.families.length; i++){
+        if(this.data_read.families[i].img.length < 30){
+          var imgShow = "";
+          await axios
+          .get(`http://localhost:5000/api/img/` + this.data_read.families[i].img)
+          .then((response) => {
+            imgShow = response.data.img
+            this.data.families[i].img = imgShow
+          })
+          .catch((e) => {
+            this.errors.push(e);
+          });
+        }
+        
+      }
   },
   async updated() {
     if (clickMap === 1) {
@@ -1585,322 +1587,24 @@ export default {
       this.status = "default";
       clickMap = 0;
     },
-    createForms() {
-      for (var i = 0; i < this.data_read.families.length; i++) {
-        this.data.families[i].img = this.data_read.families[i].img;
-        this.data.families[i].sex = this.data_read.families[i].sex;
-        this.data.families[i].name_prefix.prefix = this.data_read.families[
-          i
-        ].name_prefix.prefix;
-        this.data.families[i].name_prefix.other = this.data_read.families[
-          i
-        ].name_prefix.other;
-        this.data.families[i].name = this.data_read.families[i].name;
-        this.data.families[i].lastname = this.data_read.families[i].lastname;
-        this.data.families[i].age = this.data_read.families[i].age;
-        this.data.families[i].status = this.data_read.families[i].status;
-        this.data.families[i].phone = this.data_read.families[i].phone;
-        this.data.families[i].live = this.data_read.families[i].live;
-        this.data.families[i].relationship = this.data_read.families[
-          i
-        ].relationship;
-        this.data.families[i].revenue_job = this.data_read.families[
-          i
-        ].revenue_job;
-        this.data.families[i].expenditure_job = this.data_read.families[
-          i
-        ].expenditure_job;
-        this.data.families[i].education.sta_ed = this.data_read.families[
-          i
-        ].education.sta_ed;
-        this.data.families[i].education.ed = this.data_read.families[
-          i
-        ].education.ed;
-        this.data.families[i].expenditure.water = this.data_read.families[
-          i
-        ].expenditure.water;
-        this.data.families[i].expenditure.electric = this.data_read.families[
-          i
-        ].expenditure.electric;
-        this.data.families[i].expenditure.food = this.data_read.families[
-          i
-        ].expenditure.food;
-        this.data.families[i].expenditure.oil = this.data_read.families[
-          i
-        ].expenditure.oil;
-        this.data.families[i].expenditure.borrow = this.data_read.families[
-          i
-        ].expenditure.borrow;
-        this.data.families[i].expenditure.phone = this.data_read.families[
-          i
-        ].expenditure.phone;
-        this.data.families[i].expenditure.other = this.data_read.families[
-          i
-        ].expenditure.other;
-
-        // กลุ่มวิสาหกิจ
-        if (this.data_read.families[i].job.re_veget !== "") {
-          this.data.families[i].job.sta_veget[0] = this.data_read.families[
-            i
-          ].job.sta_veget[0];
-        }
-        if (this.data_read.families[i].job.re_rice !== "") {
-          this.data.families[i].job.sta_rice[0] = this.data_read.families[
-            i
-          ].job.sta_rice[0];
-        }
-        if (this.data_read.families[i].job.re_rub !== "") {
-          this.data.families[i].job.sta_rub[0] = this.data_read.families[
-            i
-          ].job.sta_rub[0];
-        }
-        if (this.data_read.families[i].job.re_fish !== "") {
-          this.data.families[i].job.sta_fish[0] = this.data_read.families[
-            i
-          ].job.sta_fish[0];
-        }
-        if (this.data_read.families[i].job.re_herb !== "") {
-          this.data.families[i].job.sta_herb[0] = this.data_read.families[
-            i
-          ].job.sta_herb[0];
-        }
-        if (this.data_read.families[i].job.re_silk !== "") {
-          this.data.families[i].job.sta_silk[0] = this.data_read.families[
-            i
-          ].job.sta_silk[0];
-        }
-        if (this.data_read.families[i].job.re_other !== "") {
-          this.data.families[i].job.sta_other[0] = this.data_read.families[
-            i
-          ].job.sta_other[0];
-        }
-
-        this.data.families[i].job.re_veget = this.data_read.families[
-          i
-        ].job.re_veget;
-        this.data.families[i].job.ex_veget = this.data_read.families[
-          i
-        ].job.ex_veget;
-
-        this.data.families[i].job.re_rice = this.data_read.families[
-          i
-        ].job.re_rice;
-        this.data.families[i].job.ex_rice = this.data_read.families[
-          i
-        ].job.ex_rice;
-
-        this.data.families[i].job.re_rub = this.data_read.families[
-          i
-        ].job.re_rub;
-        this.data.families[i].job.ex_rub = this.data_read.families[
-          i
-        ].job.ex_rub;
-
-        this.data.families[i].job.re_fish = this.data_read.families[
-          i
-        ].job.re_fish;
-        this.data.families[i].job.ex_fish = this.data_read.families[
-          i
-        ].job.ex_fish;
-
-        this.data.families[i].job.re_herb = this.data_read.families[
-          i
-        ].job.re_herb;
-        this.data.families[i].job.ex_herb = this.data_read.families[
-          i
-        ].job.ex_herb;
-
-        this.data.families[i].job.re_silk = this.data_read.families[
-          i
-        ].job.re_silk;
-        this.data.families[i].job.ex_silk = this.data_read.families[
-          i
-        ].job.ex_silk;
-
-        this.data.families[i].job.re_other = this.data_read.families[
-          i
-        ].job.re_other;
-        this.data.families[i].job.ex_other = this.data_read.families[
-          i
-        ].job.ex_other;
-        if (this.data_read.families[i].disease.hasOwnProperty("sta_dis")) {
-          if (
-            this.data_read.families[i].disease.sta_dis[0] !== "" ||
-            this.data_read.families[i].disease.sta_dis[10] !== ""
-          ) {
-            this.data.families[i].disease = this.data_read.families[i].disease;
-            this.data.families[i].disease.othe_dis = this.data_read.families[
-              i
-            ].disease.othe_dis;
-            //console.log("disease",i, this.data_read.families[i].disease.hasOwnProperty('sta_dis'));
-          }
-        }
-        /*this.data.families[i].disease.sta_dis = this.data_read.families[
-          i
-        ].disease.sta_dis;
-        this.data.families[i].disease.othe_dis = this.data_read.families[
-          i
-        ].disease.othe_dis;*/
-        this.data.families[i].first_jop = this.data_read.families[i].first_jop;
-        /*this.data.families[i].first_jop.othe_fj = this.data_read.families[
-          i
-        ].first_jop.othe_fj;*/
-
-        //อาชีพเกษตรกร รายได้หลักและเสริม
-        if (this.data_read.families[i].re_farm_job.field.kg.length > 0) {
-          this.data.families[i].re_farm_job.field = this.data_read.families[
-            i
-          ].re_farm_job.field;
-        }
-        if (this.data_read.families[i].re_farm_job.animal.ani1 !== "") {
-          this.data.families[i].re_farm_job.animal = this.data_read.families[
-            i
-          ].re_farm_job.animal;
-        }
-        if (this.data_read.families[i].re_farm_job.mat.mat !== "") {
-          this.data.families[i].re_farm_job.mat = this.data_read.families[
-            i
-          ].re_farm_job.mat;
-        }
-        if (
-          this.data_read.families[i].re_farm_job.vegetables.vegetables !== ""
-        ) {
-          this.data.families[
-            i
-          ].re_farm_job.vegetables = this.data_read.families[
-            i
-          ].re_farm_job.vegetables;
-        }
-        if (this.data_read.families[i].re_farm_job.other.type1 !== "") {
-          this.data.families[i].re_farm_job.other = this.data_read.families[
-            i
-          ].re_farm_job.other;
-        }
-        if (this.data_read.families[i].re_farm_job.pre_mat.mat !== "") {
-          this.data.families[i].re_farm_job.pre_mat = this.data_read.families[
-            i
-          ].re_farm_job.pre_mat;
-        }
-        if (this.data_read.families[i].re_farm_job.pre_field.kg !== "") {
-          this.data.families[i].re_farm_job.pre_field = this.data_read.families[
-            i
-          ].re_farm_job.pre_field;
-        }
-        if (this.data_read.families[i].re_farm_job.pre_animal.ani1 !== "") {
-          this.data.families[
-            i
-          ].re_farm_job.pre_animal = this.data_read.families[
-            i
-          ].re_farm_job.pre_animal;
-        }
-        if (
-          this.data_read.families[i].re_farm_job.pre_vegetables.vegetables !==
-          ""
-        ) {
-          this.data.families[
-            i
-          ].re_farm_job.pre_vegetables = this.data_read.families[
-            i
-          ].re_farm_job.pre_vegetables;
-        }
-        if (this.data_read.families[i].re_farm_job.pre_other.type1 !== "") {
-          this.data.families[i].re_farm_job.pre_other = this.data_read.families[
-            i
-          ].re_farm_job.pre_other;
-        }
-
-        //อาชีพเกษตรกร รายจ่ายหลักและเสริม
-        if (
-          this.data_read.families[i].ex_farm_job.fertilizer.fertilizer !== ""
-        ) {
-          this.data.families[
-            i
-          ].ex_farm_job.fertilizer = this.data_read.families[
-            i
-          ].ex_farm_job.fertilizer;
-        }
-        if (this.data_read.families[i].ex_farm_job.wage.wage !== "") {
-          this.data.families[i].ex_farm_job.wage = this.data_read.families[
-            i
-          ].ex_farm_job.wage;
-        }
-        if (this.data_read.families[i].ex_farm_job.rice.rice !== "") {
-          this.data.families[i].ex_farm_job.rice = this.data_read.families[
-            i
-          ].ex_farm_job.rice;
-        }
-        if (this.data_read.families[i].ex_farm_job.vegetables.vege !== "") {
-          this.data.families[
-            i
-          ].ex_farm_job.vegetables = this.data_read.families[
-            i
-          ].ex_farm_job.vegetables;
-        }
-        if (
-          this.data_read.families[i].ex_farm_job.animal_feed.animal_feed !== ""
-        ) {
-          this.data.families[
-            i
-          ].ex_farm_job.animal_feed = this.data_read.families[
-            i
-          ].ex_farm_job.animal_feed;
-        }
-        if (
-          this.data_read.families[i].ex_farm_job.pre_fertilizer.fertilizer !==
-          ""
-        ) {
-          this.data.families[
-            i
-          ].ex_farm_job.pre_fertilizer = this.data_read.families[
-            i
-          ].ex_farm_job.pre_fertilizer;
-        }
-        if (this.data_read.families[i].ex_farm_job.pre_wage.wage !== "") {
-          this.data.families[i].ex_farm_job.pre_wage = this.data_read.families[
-            i
-          ].ex_farm_job.pre_wage;
-        }
-        if (this.data_read.families[i].ex_farm_job.pre_rice.rice !== "") {
-          this.data.families[i].ex_farm_job.pre_rice = this.data_read.families[
-            i
-          ].ex_farm_job.pre_rice;
-        }
-        if (this.data_read.families[i].ex_farm_job.pre_vegetables.vege !== "") {
-          this.data.families[
-            i
-          ].ex_farm_job.pre_vegetables = this.data_read.families[
-            i
-          ].ex_farm_job.pre_vegetables;
-        }
-        if (
-          this.data_read.families[i].ex_farm_job.pre_animal_feed.animal_feed !==
-          ""
-        ) {
-          this.data.families[
-            i
-          ].ex_farm_job.pre_animal_feed = this.data_read.families[
-            i
-          ].ex_farm_job.pre_animal_feed;
-        }
-        if (
-          this.data_read.families[i].ex_farm_job.pre_other.other1.cost !== ""
-        ) {
-          this.data.families[i].ex_farm_job.pre_other = this.data_read.families[
-            i
-          ].ex_farm_job.pre_other;
-        }
-        if (this.data_read.families[i].ex_farm_job.other.other1.cost !== "") {
-          this.data.families[i].ex_farm_job.other = this.data_read.families[
-            i
-          ].ex_farm_job.other;
-        }
-      }
-    },
     async clickUpdate() {
-      //console.log("this.edit", this.edit, "this.data", this.data);
-      await dataRef.child(this.edit).update({ ...this.data });
-      this.$emit("close_edit_forms", "default");
       //await this.reloadApp();
+      let str = {
+        explorers: this.data.explorers,
+        address: this.data.address,
+        land: this.data.land,
+        families: this.data.families,
+      };
+      alert(this.edit)
+      axios
+      .put('http://localhost:5000/api/data/' + this.edit , str )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      await this.$emit("close_edit_forms", "default");
     },
     reloadApp() {
       window.location.reload();
@@ -2193,16 +1897,7 @@ export default {
     },
     getDataMap() {
       clickMap = 0;
-      //this.statusMap = "default";
       this.status = "default";
-      /* if(this.data.land.length >= 1){
-        for(var i = 1; i <= this.data.land.length - 1 ; i ++){
-          this.data.land[i].location = markers_locations
-        }
-      }else{
-        this.data.land[0].location = markers_locations
-        alert(this.data.land[0].location)*/
-      //}
       alert(markers_locations);
       this.data.land[number].location = markers_locations.toString();
     },

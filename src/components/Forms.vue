@@ -75,16 +75,23 @@
                 <br />
                 <h4>คนที่: {{ counter + 1 }}.</h4>
                 <div class="form-group">
-                  <img class="preview" :src="data.families[counter].img" />
+                  <img class="preview" :src="showimg[counter].img" />
                 </div>
                 <div class="form-group">
                   <p>อัพโหลดรูป:</p>
-                  <input
-                    type="file"
-                    @change="previewImage"
-                    accept="image/*"
-                    style="font-family: auto;"
-                  />
+                  <div class="row">
+                    <div class="col" style="max-width: auto;">
+                      <b-form-file @change="handleImage" accept="image/*" />
+                    </div>
+                    <div class="col" style="max-width: 35%;">
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        style="color:#ffffff"
+                        @click="uploadImg(counter)"
+                      >อัปโหลด</button>
+                    </div>
+                  </div>
                 </div>
 
                 <b-form-group label="เพศ:">
@@ -1571,16 +1578,14 @@
   defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwRemyTGrDVGy-EYRLa79puv5mqncOf-Y"
 ></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
-import * as firebase from "firebase";
 import dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import options from "../assets/options.json"
+import options from "../assets/options.json";
 import Swal from "sweetalert2";
+import axios from "axios";
 
-var database = firebase.database();
-var dataRef = database.ref("/data");
 // map
 var labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var labelIndex = 0;
@@ -1596,9 +1601,14 @@ var number = 0;
 export default {
   name: "Forms",
   props: ["user"],
-  data: function() {
+  data: function () {
     return {
-      imageData: null,
+      img: [],
+      showimg: [
+        {
+          img: "",
+        },
+      ],
       uploadValue: 0,
       sta_add: [],
       status_add: 0,
@@ -1610,7 +1620,7 @@ export default {
           name: "",
           date: "",
           time: "",
-          explorer: ""
+          explorer: "",
         },
         address: {
           province: "",
@@ -1618,7 +1628,7 @@ export default {
           district: "",
           moo: "",
           house_number: "",
-          zip: ""
+          zip: "",
         },
         families: [
           {
@@ -1626,7 +1636,7 @@ export default {
             sex: "",
             name_prefix: {
               prefix: "",
-              other: ""
+              other: "",
             },
             name: "",
             lastname: "",
@@ -1663,20 +1673,20 @@ export default {
               sta_other2: [],
               re_other2: "",
               ex_other2: "",
-              type_other2: ""
+              type_other2: "",
             },
             disease: {
               sta_dis: [],
-              othe_dis: ""
+              othe_dis: "",
             },
             education: {
               sta_ed: "",
-              ed: ""
+              ed: "",
             },
             relationship: "",
             first_jop: {
               sta_fj: "",
-              othe_fj: ""
+              othe_fj: "",
             },
             expenditure: {
               water: "",
@@ -1686,28 +1696,28 @@ export default {
               borrow: {
                 borrow1: {
                   bor: "",
-                  cost: ""
+                  cost: "",
                 },
                 borrow2: {
                   bor: "",
-                  cost: ""
+                  cost: "",
                 },
                 borrow3: {
                   bor: "",
-                  cost: ""
-                }
+                  cost: "",
+                },
               },
               phone: "",
               other: {
                 other1: {
                   other: "",
-                  cost: ""
+                  cost: "",
                 },
                 other2: {
                   other: "",
-                  cost: ""
-                }
-              }
+                  cost: "",
+                },
+              },
             },
             revenue_job: "",
             expenditure_job: "",
@@ -1715,131 +1725,131 @@ export default {
               field: {
                 sack: "",
                 kg: "",
-                status: []
+                status: [],
               },
               animal: {
                 status: [],
                 ani1: "",
                 cost_ami1: "",
                 ani2: "",
-                cost_ami2: ""
+                cost_ami2: "",
               },
               mat: {
                 status: [],
-                mat: ""
+                mat: "",
               },
               pre_mat: {
                 status: [],
-                mat: ""
+                mat: "",
               },
               pre_field: {
                 sack: "",
                 kg: "",
-                status: []
+                status: [],
               },
               pre_animal: {
                 status: [],
                 cost_ami1: "",
                 ani1: "",
                 cost_ami2: "",
-                ani2: ""
+                ani2: "",
               },
               vegetables: {
                 status: [],
-                vegetables: ""
+                vegetables: "",
               },
               pre_vegetables: {
                 status: [],
-                vegetables: ""
+                vegetables: "",
               },
               other: {
                 status: [],
                 type1: "",
                 costother1: "",
                 type2: "",
-                costother2: ""
+                costother2: "",
               },
               pre_other: {
                 status: [],
                 type1: "",
                 costother1: "",
                 type2: "",
-                costother2: ""
-              }
+                costother2: "",
+              },
             },
             ex_farm_job: {
               fertilizer: {
                 status: [],
-                fertilizer: ""
+                fertilizer: "",
               },
               wage: {
                 status: [],
-                wage: ""
+                wage: "",
               },
               rice: {
                 status: [],
-                rice: ""
+                rice: "",
               },
               vegetables: {
                 status: [],
-                vege: ""
+                vege: "",
               },
               animal_feed: {
                 status: [],
-                animal_feed: ""
+                animal_feed: "",
               },
               pre_fertilizer: {
                 status: [],
-                fertilizer: ""
+                fertilizer: "",
               },
               pre_wage: {
                 status: [],
-                wage: ""
+                wage: "",
               },
               pre_rice: {
                 status: [],
-                rice: ""
+                rice: "",
               },
               pre_vegetables: {
                 status: [],
-                vege: ""
+                vege: "",
               },
               pre_animal_feed: {
                 status: [],
-                animal_feed: ""
+                animal_feed: "",
               },
               pre_other: {
                 status: [],
                 other1: {
                   other: "",
-                  cost: ""
+                  cost: "",
                 },
                 other2: {
                   other: "",
-                  cost: ""
+                  cost: "",
                 },
                 other3: {
                   other: "",
-                  cost: ""
-                }
+                  cost: "",
+                },
               },
               other: {
                 status: [],
                 other1: {
                   other: "",
-                  cost: ""
+                  cost: "",
                 },
                 other2: {
                   other: "",
-                  cost: ""
+                  cost: "",
                 },
                 other3: {
                   other: "",
-                  cost: ""
-                }
-              }
-            }
-          }
+                  cost: "",
+                },
+              },
+            },
+          },
         ],
         land: [
           {
@@ -1847,12 +1857,12 @@ export default {
             area_size: {
               rai: "",
               ngan: "",
-              wa: ""
+              wa: "",
             },
             location: "",
-            plant: ""
-          }
-        ]
+            plant: "",
+          },
+        ],
       },
       op_job_veget: options.op_job_veget,
       op_job_rice: options.op_job_rice,
@@ -1871,10 +1881,10 @@ export default {
       op_animal: options.op_animal,
       op_vegetables: options.op_vegetables,
       op_mat: options.op_mat.op_mat,
-       op_farm_other: options.op_farm_other,
+      op_farm_other: options.op_farm_other,
       op_ed: options.op_ed,
       op_sex: options.op_sex,
-      op_name_prefix:options.op_name_prefix,
+      op_name_prefix: options.op_name_prefix,
       op_sta: options.op_sta,
       op_relationship: options.op_relationship,
       op_first_jop_none: options.op_first_jop_none,
@@ -1890,24 +1900,24 @@ export default {
       map = new window.google.maps.Map(this.$refs["map"], {
         center: { lat: 16.439625, lng: 102.828728 },
         zoom: 17,
-        mapTypeId: "satellite"
+        mapTypeId: "satellite",
       });
       infoWindow = new google.maps.InfoWindow();
 
       // Try HTML5 geolocation.
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          function(position) {
+          function (position) {
             var pos = {
               lat: position.coords.latitude,
-              lng: position.coords.longitude
+              lng: position.coords.longitude,
             };
             infoWindow.setPosition(pos);
             infoWindow.setContent("Location found.");
             infoWindow.open(map);
             map.setCenter(pos);
           },
-          function() {
+          function () {
             this.handleLocationError(true, infoWindow, map.getCenter());
           }
         );
@@ -1917,7 +1927,7 @@ export default {
       }
       // This event listener will call addMarker() when the map is clicked.
       const that = this;
-      google.maps.event.addListener(map, "click", e => {
+      google.maps.event.addListener(map, "click", (e) => {
         // function call not working
         that.addMarker(e.latLng);
         that.done();
@@ -1926,7 +1936,6 @@ export default {
   },
   created() {
     this.data.explorers.explorer = this.user;
-
   },
   methods: {
     cancel() {
@@ -1937,33 +1946,79 @@ export default {
       this.deleteMarkers();
       clickMap = 0;
     },
-    previewImage(event) {
-      this.uploadValue = 0;
-      this.picture = null;
-      this.imageData = event.target.files[0];
+    handleImage(e) {
+      this.img = [];
+      this.img = e.target.files[0];
+      console.log(this.img);
+    },
+    uploadImg(counter) {
+      // Upload images to DB
+      if (!this.img.type.includes("image/")) {
+        alert("Please select an image file");
+        return;
+      }
 
-      this.picture = null;
-      const storageRef = firebase
-        .storage()
-        .ref(`${this.imageData.name}`)
-        .put(this.imageData);
-      storageRef.on(
-        `state_changed`,
-        snapshot => {
-          this.uploadValue =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
-        error => {
-          console.log(error.message);
-        },
-        () => {
-          this.uploadValue = 100;
-          storageRef.snapshot.ref.getDownloadURL().then(url => {
-            var num = this.data.families.length - 1
-            this.data.families[counter].img = url;
+      if (typeof FileReader === "function") {
+        const reader = new FileReader();
+        var loal_status = "";
+        reader.onload = (event) => {
+          this.showimg[counter].img = event.target.result;
+          //console.log(this.data.families[counter].img)
+          let str = {
+            img: event.target.result,
+          };
+          axios
+            .post(`http://localhost:5000/api/img`, str)
+            .then((response) => {
+              this.data.families[counter].img = response.data;
+              loal_status = response.data;
+              //console.log("response", response.data );
+              if (response.data) {
+                Swal.fire({
+                  position: "top-end",
+                  icon: "success",
+                  title: "อัปโหลดรูปเสร็จสิ้น",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              }
+            })
+            .catch((e) => {
+              this.errors.push(e);
+            });
+        };
+        reader.readAsDataURL(this.img);
+        if (loal_status === "") {
+          let timerInterval;
+          Swal.fire({
+            title: "กำลังอัปโหลดรูป!",
+            timer: 3000,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+              timerInterval = setInterval(() => {
+                const content = Swal.getContent();
+                if (content) {
+                  const b = content.querySelector("b");
+                  if (b) {
+                    b.textContent = Swal.getTimerLeft();
+                  }
+                }
+              }, 100);
+            },
+            onClose: () => {
+              clearInterval(timerInterval);
+            },
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log("I was closed by the timer");
+            }
           });
         }
-      );
+      } else {
+        alert("Sorry, FileReader API not supported");
+      }
     },
     addVisa() {
       this.data.families.push({
@@ -1971,7 +2026,7 @@ export default {
         sex: "",
         name_prefix: {
           prefix: "",
-          other: ""
+          other: "",
         },
         name: "",
         lastname: "",
@@ -2008,20 +2063,20 @@ export default {
           sta_other2: [],
           re_other2: "",
           ex_other2: "",
-          type_other2: ""
+          type_other2: "",
         },
         disease: {
           sta_dis: [],
-          othe_dis: ""
+          othe_dis: "",
         },
         education: {
           sta_ed: "",
-          ed: ""
+          ed: "",
         },
         relationship: "",
         first_jop: {
           sta_fj: [],
-          othe_fj: ""
+          othe_fj: "",
         },
         expenditure: {
           water: "",
@@ -2031,28 +2086,28 @@ export default {
           borrow: {
             borrow1: {
               bor: "",
-              cost: ""
+              cost: "",
             },
             borrow2: {
               bor: "",
-              cost: ""
+              cost: "",
             },
             borrow3: {
               bor: "",
-              cost: ""
-            }
+              cost: "",
+            },
           },
           phone: "",
           other: {
             other1: {
               other: "",
-              cost: ""
+              cost: "",
             },
             other2: {
               other: "",
-              cost: ""
-            }
-          }
+              cost: "",
+            },
+          },
         },
         revenue_job: "",
         expenditure_job: "",
@@ -2060,134 +2115,136 @@ export default {
           field: {
             sack: "",
             kg: "",
-            status: []
+            status: [],
           },
           animal: {
             status: [],
             ani1: "",
             cost_ami1: "",
             ani2: "",
-            cost_ami2: ""
+            cost_ami2: "",
           },
           mat: {
             status: [],
-            mat: ""
+            mat: "",
           },
           pre_mat: {
             status: [],
-            mat: ""
+            mat: "",
           },
           pre_field: {
             sack: "",
             kg: "",
-            status: []
+            status: [],
           },
           pre_animal: {
             status: [],
             cost_ami1: "",
             ani1: "",
             cost_ami2: "",
-            ani2: ""
+            ani2: "",
           },
           vegetables: {
             status: [],
-            vegetables: ""
+            vegetables: "",
           },
           pre_vegetables: {
             status: [],
-            vegetables: ""
+            vegetables: "",
           },
           other: {
             status: [],
             type1: "",
             costother1: "",
             type2: "",
-            costother2: ""
+            costother2: "",
           },
           pre_other: {
             status: [],
             type1: "",
             costother1: "",
             type2: "",
-            costother2: ""
-          }
+            costother2: "",
+          },
         },
         ex_farm_job: {
           fertilizer: {
             status: [],
-            fertilizer: ""
+            fertilizer: "",
           },
           wage: {
             status: [],
-            wage: ""
+            wage: "",
           },
           rice: {
             status: [],
-            rice: ""
+            rice: "",
           },
           vegetables: {
             status: [],
-            vege: ""
+            vege: "",
           },
           animal_feed: {
             status: [],
-            animal_feed: ""
+            animal_feed: "",
           },
           pre_fertilizer: {
             status: [],
-            fertilizer: ""
+            fertilizer: "",
           },
           pre_wage: {
             status: [],
-            wage: ""
+            wage: "",
           },
           pre_rice: {
             status: [],
-            rice: ""
+            rice: "",
           },
           pre_vegetables: {
             status: [],
-            vege: ""
+            vege: "",
           },
           pre_animal_feed: {
             status: [],
-            animal_feed: ""
+            animal_feed: "",
           },
           pre_other: {
             status: [],
             other1: {
               other: "",
-              cost: ""
+              cost: "",
             },
             other2: {
               other: "",
-              cost: ""
+              cost: "",
             },
             other3: {
               other: "",
-              cost: ""
-            }
+              cost: "",
+            },
           },
           other: {
             status: [],
             other1: {
               other: "",
-              cost: ""
+              cost: "",
             },
             other2: {
               other: "",
-              cost: ""
+              cost: "",
             },
             other3: {
               other: "",
-              cost: ""
-            }
-          }
-        }
+              cost: "",
+            },
+          },
+        },
       });
+      this.showimg.push({ img: "" });
     },
     deleteVisa(counter) {
       this.data.families.splice(counter, 1);
+      this.showimg.splice(counter, 1);
     },
     addland() {
       this.data.land.push({
@@ -2195,10 +2252,10 @@ export default {
         area_size: {
           rai: "",
           ngan: "",
-          wa: ""
+          wa: "",
         },
         location: "",
-        plant: ""
+        plant: "",
       });
     },
     deleteland(counter) {
@@ -2210,7 +2267,6 @@ export default {
       this.statusMap = "map";
     },
     saveData() {
-      //console.log("dataRef", this.data);
       //console.log("op_first_jop",options);
       const today = new Date();
       this.statusMap = "save";
@@ -2224,7 +2280,21 @@ export default {
         today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     },
     async sendData() {
-      await dataRef.push({ ...this.data });
+      let str = {
+        explorers: this.data.explorers,
+        address: this.data.address,
+        land: this.data.land,
+        families: this.data.families,
+      };
+      console.log("str", str);
+      await axios
+        .post(`http://localhost:5000/api/data`, str)
+        .then((response) => {
+          console.log("response", JSON.parse(response.config.data));
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
       //await this.reloadApp();
       await Swal.fire({
         position: "center",
@@ -2234,25 +2304,25 @@ export default {
         timerProgressBar: true,
         toast: true,
         timer: 5000,
-        onOpen: toast => {
+        onOpen: (toast) => {
           this.statusMap = "default";
           this.$emit("close_Forms", "default");
           if (toast) {
-              Swal.fire({
+            Swal.fire({
               position: "center",
               icon: "success",
               title: "กำลังอัปโหลดข้อมูล",
               showConfirmButton: false,
               timerProgressBar: true,
               timer: 3000,
-              onOpen: toast => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-              
-              }})
+              onOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
           }
-        }})
-      
+        },
+      });
     },
     reloadApp() {
       window.location.reload();
@@ -2261,14 +2331,6 @@ export default {
     getDataMap() {
       clickMap = 0;
       this.statusMap = "default";
-      /* if(this.data.land.length >= 1){
-        for(var i = 1; i <= this.data.land.length - 1 ; i ++){
-          this.data.land[i].location = markers_locations
-        }
-      }else{
-        this.data.land[0].location = markers_locations
-        alert(this.data.land[0].location)*/
-      //}
       alert(markers_locations);
       this.data.land[number].location = markers_locations.toString();
     },
@@ -2281,7 +2343,7 @@ export default {
         strokeOpacity: 0.8,
         strokeWeight: 3,
         fillColor: color,
-        fillOpacity: 0.35
+        fillOpacity: 0.35,
       });
       drawing.setMap(map);
       // Add a listener for the click event.
@@ -2315,7 +2377,7 @@ export default {
       var marker = new google.maps.Marker({
         position: location,
         label: labels[labelIndex++ % labels.length],
-        map: map
+        map: map,
       });
       markers_locations.push(location);
       markers.push(marker);
@@ -2347,8 +2409,8 @@ export default {
       colors = [];
       markers_locations = [];
       markers = [];
-    } // map
-  }
+    }, // map
+  },
 };
 </script>
 
