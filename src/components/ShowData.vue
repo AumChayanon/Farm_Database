@@ -832,7 +832,7 @@
         >X</button>
       </div>
       <h3 style="padding-left:16px; ">แก้ไขฟอร์ม</h3>
-      <EditData :data_edit="this.data" :edit="this.edit" @close_edit_forms="closeEditForms"/>
+      <EditData :data_edit="this.data" :edit="this.edit" @close_edit_forms="closeEditForms" :api="this.api" />
     </div>
   </div>
 </template>
@@ -866,11 +866,12 @@ var database = firebase.database();
 var dataRef = database.ref("/data");
 export default {
   name: "Show",
-  props: ["data_conclude", "data", "statusUser"],
+  props: ["data_conclude", "data", "statusUser", "api"],
   components: {
     EditData,
     Pagination
   },
+  
   data: function() {
     return {
       map: null, //map
@@ -987,8 +988,9 @@ export default {
       this.edit = value;
       this.status = "edit";
     },
-    delData(value) {
+    async delData(value) {
       //console.log(value);
+      const delimg = this.data.find(mgs => mgs._id == value);
       Swal.fire({
         title: "ลบข้อมูล?",
         text: "คุณแน่ใจที่จะลบข้อมูล",
@@ -1001,8 +1003,20 @@ export default {
       }).then(result => {
         if (result.value) {
           Swal.fire("ลบเสร็จสิ้น!", "คุณได้ลบข้อมูลสำเร็จเรียบร้อยแล้ว.", "success");
+          
+          console.log(delimg);
+          for(var i = 0; i< delimg.families.length; i++){
+            if(delimg.families[i].img.length > 0){
+              axios.delete(this.api.img + "/" + delimg.families[i].img ).then((response) => {
+                  console.log(response);
+                })
+                .catch((e) => {
+                  this.errors.push(e);
+                });
+                  }
+          }
           axios
-          .delete('http://localhost:5000/api/data/' + value )
+          .delete(this.api.data + "/" + value )
           .then((response) => {
             console.log(response);
           })
@@ -1011,6 +1025,10 @@ export default {
           });
         }
       });
+      const del = this.data_conclude.find(mgs => mgs.key == value);
+      const index = this.data.indexOf(del);
+      this.data.splice(index, 1);
+      this.data_conclude.splice(index, 1);
     },
     showMap(location) {
       clickMap = 1;
@@ -1042,7 +1060,7 @@ export default {
           this.addVisa()
           var imgShow = "";
                   await axios
-                  .get(`http://localhost:5000/api/img/` + housetest.families[i].img)
+                  .get(this.api.img + "/"+ housetest.families[i].img)
                   .then((response) => {
                     imgShow = response.data.img
                     this.showimg[i].img = imgShow

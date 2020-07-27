@@ -196,7 +196,7 @@
         </div>
       </div>
 
-      <Forms :user="this.user" @close_Forms="closeForms" />
+      <Forms :user="this.user" @close_Forms="closeForms" :api="this.api"/>
     </div>
 
     <!-- Show data -->
@@ -207,7 +207,7 @@
         v-on:click="cancel"
         style="float: right; box-shadow: -5px -5px 5px #ffffff, 5px 5px 10px #dbdada;"
       >X</button>
-      <ShowData :data_conclude="this.data_conclude" :data="this.data" :statusUser="this.user" />
+      <ShowData :data_conclude="this.data_conclude" :data="this.data" :statusUser="this.user" :api="this.api"/>
     </div>
 
     <div v-else-if="this.status === 'showPlant'" id="slide2">
@@ -279,6 +279,10 @@ export default {
   },
   data: function () {
     return {
+      api:{
+        data:"http://182.52.57.59:37017/api/data",
+        img:"http://182.52.57.59:37017/api/img"
+      },
       status_load: "load",
       status: "default",
       data_house: [],
@@ -311,8 +315,16 @@ export default {
         this.user = str.split("@", 1)[0];
       }
     });
-    axios
-      .get(`http://localhost:5000/api/data`)
+   
+  },
+  async mounted(){
+    await this.getData()
+    await console.log(this.data);
+  },
+  methods: {
+    async getData(){
+      await axios
+      .get(this.api.data)
       .then((response) => {
         this.data = response.data;
         if(this.data){
@@ -322,8 +334,7 @@ export default {
       .catch((e) => {
         this.errors.push(e);
       });
-  },
-  methods: {
+    },
     closeForms(e) {
       this.status = e;
     },
@@ -343,6 +354,8 @@ export default {
       this.$refs.flickity.next();
     },
     async showJob() {
+      this.data = []
+      await this.getData()
       var animal = 0;
       var field = 0;
       var mat = 0;
@@ -434,6 +447,8 @@ export default {
       this.status = "showJob";
     },
     async showPeople() {
+      this.data = []
+      await this.getData()
       this.statusMap = "load";
       const district = [];
       this.countPeople = 0;
@@ -465,6 +480,8 @@ export default {
       this.statusMap = "default";
     },
     async showPlant() {
+      this.data = []
+      await this.getData()
       this.status = "showPlant";
       var name_plant = [];
       for (var i = 0; i < this.data.length; i++) {
@@ -522,6 +539,8 @@ export default {
       this.statusMap = "default";
     },
     async onClickShow() {
+      this.data = []
+      await this.getData()
       //var db_APL;
       this.db_AP = [];
       this.plant = [];

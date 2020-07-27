@@ -1456,7 +1456,7 @@ if (!firebase.apps.length) {
 }
 export default {
   name: "edit",
-  props: ["edit", "data_edit"],
+  props: ["edit", "data_edit", "api"],
   data() {
     return {
       //map
@@ -1512,7 +1512,7 @@ export default {
         if(this.showimg[i].img.length < 30){
           var imgShow = "";
           await axios
-          .get(`http://localhost:5000/api/img/` + this.data_read.families[i].img)
+          .get(this.api.img + "/" + this.data_read.families[i].img)
           .then((response) => {
             imgShow = response.data.img
             this.showimg[i].img = imgShow
@@ -1619,7 +1619,7 @@ export default {
         families: this.data.families,
       };
       axios
-      .put(`http://localhost:5000/api/data/${this.edit}` , str )
+      .put(this.api.data +  "/" + this.edit , str )
       .then((response) => {
         console.log(response);
       })

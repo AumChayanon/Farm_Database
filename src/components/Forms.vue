@@ -1600,7 +1600,7 @@ var clickMap = 0;
 var number = 0;
 export default {
   name: "Forms",
-  props: ["user"],
+  props: ["user", "api"],
   data: function () {
     return {
       img: [],
@@ -1968,7 +1968,7 @@ export default {
             img: event.target.result,
           };
           axios
-            .post(`http://localhost:5000/api/img`, str)
+            .post(this.api.img, str)
             .then((response) => {
               this.data.families[counter].img = response.data;
               loal_status = response.data;
@@ -2287,7 +2287,7 @@ export default {
         families: this.data.families,
       };
       await axios
-        .post(`http://localhost:5000/api/data`, str)
+        .post(this.api.data, str)
         .then((response) => {
           console.log("response", JSON.parse(response.config.data));
         })
