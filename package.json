@@ -54,12 +54,12 @@
   "main": ".eslintrc.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deknaew2582/farmer_database.git"
+    "url": "git+https://github.com/AumChayanon/Farm_Database.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/deknaew2582/farmer_database/issues"
+    "url": "https://github.com/AumChayanon/Farm_Database/issues"
   },
-  "homepage": "https://github.com/deknaew2582/farmer_database#readme"
+  "homepage": "https://github.com/AumChayanon/Farm_Database#readme"
 }
