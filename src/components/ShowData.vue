@@ -1026,8 +1026,7 @@ export default {
         }
       });
       const del = this.data_conclude.find(mgs => mgs.key == value);
-      const index = this.data.indexOf(del);
-      this.data.splice(index, 1);
+      const index = this.data_conclude.indexOf(del);
       this.data_conclude.splice(index, 1);
     },
     showMap(location) {
@@ -1068,6 +1067,9 @@ export default {
                   .catch((e) => {
                     this.errors.push(e);
                   });
+        }
+        if( housetest.families[i].img.indexOf("https://firebasestorage.googleapis.com/") !== -1){
+          this.showimg[i].img = this.data_read.families[i].img
         }
         
       }

@@ -265,7 +265,6 @@ import ShowPlant from "../components/Showplant";
 import axios from "axios";
 import SyncLoader from "vue-spinner/src/SyncLoader.vue";
 import * as firebase from "firebase";
-
 export default {
   name: "Home",
   components: {
@@ -322,6 +321,7 @@ export default {
     await console.log(this.data);
   },
   methods: {
+    
     async getData(){
       await axios
       .get(this.api.data)

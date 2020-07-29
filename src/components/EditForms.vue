@@ -1522,6 +1522,9 @@ export default {
             this.errors.push(e);
           });
         }
+        if(this.data_read.families[i].img.indexOf("https://firebasestorage.googleapis.com/") !== -1){
+          this.showimg[i].img = this.data_read.families[i].img
+        }
         
       }
       this.data = this.data_read 

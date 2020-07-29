@@ -1905,7 +1905,7 @@ export default {
       infoWindow = new google.maps.InfoWindow();
 
       // Try HTML5 geolocation.
-      if (navigator.geolocation) {
+      /*if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function (position) {
             var pos = {
@@ -1924,7 +1924,13 @@ export default {
       } else {
         // Browser doesn't support Geolocation
         this.handleLocationError(false, infoWindow, map.getCenter());
-      }
+      }*/
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        this.browserGeolocationSuccess,
+        this.browserGeolocationFail,
+      {maximumAge: 50000, timeout: 20000, enableHighAccuracy: true});
+  }
       // This event listener will call addMarker() when the map is clicked.
       const that = this;
       google.maps.event.addListener(map, "click", (e) => {
@@ -1938,6 +1944,44 @@ export default {
     this.data.explorers.explorer = this.user;
   },
   methods: {
+    apiGeolocationSuccess(position){
+    alert("API geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+},
+    tryAPIGeolocation() {
+    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDwRemyTGrDVGy-EYRLa79puv5mqncOf-Y", function(success) {
+        this.apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+  })
+  .fail(function(err) {
+    alert("API Geolocation error! \n\n"+err);
+  });
+},
+
+browserGeolocationSuccess(position) {
+    alert("Browser geolocation success!\n\nlat = " + position.coords.latitude + "\nlng = " + position.coords.longitude);
+    var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            infoWindow.setPosition(pos);
+            infoWindow.setContent("Location found.");
+            infoWindow.open(map);
+            map.setCenter(pos);
+},
+    browserGeolocationFail(error){
+  switch (error.code) {
+    case error.TIMEOUT:
+      alert("Browser geolocation error !\n\nTimeout.");
+      break;
+    case error.PERMISSION_DENIED:
+      if(error.message.indexOf("Only secure origins are allowed") == 0) {
+        this.tryAPIGeolocation();
+      }
+      break;
+    case error.POSITION_UNAVAILABLE:
+      alert("Browser geolocation error !\n\nPosition unavailable.");
+      break;
+  }
+},
     cancel() {
       this.statusMap = "default";
     },
